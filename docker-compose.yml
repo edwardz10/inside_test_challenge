@@ -1,0 +1,34 @@
+version: '3'
+
+services:
+
+  mc1:
+    container_name: mc1
+    hostname: mc1
+    build:
+      context: ./mc1
+      dockerfile: Dockerfile
+    ports:
+     - 9000:9000
+    restart: unless-stopped
+
+  mc2:
+    container_name: mc2
+    hostname: mc2
+    build:
+      context: ./mc2
+      dockerfile: Dockerfile
+    ports:
+     - 9010:9010
+    restart: unless-stopped
+
+  mc3:
+    container_name: mc3
+    hostname: mc3
+    build:
+      context: ./mc3
+      dockerfile: Dockerfile
+    ports:
+     - 9020:9020
+    restart: unless-stopped
+  
