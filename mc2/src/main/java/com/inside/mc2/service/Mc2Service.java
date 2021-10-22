@@ -1,9 +1,11 @@
 package com.inside.mc2.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inside.mc2.model.Message;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
 import org.springframework.util.concurrent.ListenableFuture;
@@ -17,6 +19,7 @@ import java.util.Date;
 public class Mc2Service {
 
     private final KafkaProducer kafkaProducer;
+    private final ObjectMapper objectMapper;
 
     public void processMessage(Message message) {
         message.setMc2Timestamp(new Date());
@@ -27,7 +30,7 @@ public class Mc2Service {
     private void sendMessageToMc3ViaKafka(Message message) {
         log.info("Done.");
 
-        ListenableFuture<SendResult<String, String>> listenableFuture = kafkaProducer.sendMessage("INPUT_DATA", "IN_KEY", LocalDate.now().toString());
+        val listenableFuture = kafkaProducer.sendMessage("INPUT_DATA", "IN_KEY", objectMapper.writeValueAsString(message));
 
         SendResult<String, String> result = listenableFuture.get();
         log.info(String.format("Produced:\ntopic: {}\noffset: {}\npartition: {}\nvalue size: {}",

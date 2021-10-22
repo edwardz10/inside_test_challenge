@@ -2,10 +2,12 @@ package com.inside.mc3.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
 @Data
+@NoArgsConstructor
 public class Message {
     @JsonProperty("id")
     private Integer id;
