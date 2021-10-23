@@ -11,6 +11,8 @@ services:
     ports:
      - 9000:9000
     restart: unless-stopped
+    depends_on:
+      - maria_db
 
   mc2:
     container_name: mc2
@@ -21,6 +23,8 @@ services:
     ports:
      - 9010:9010
     restart: unless-stopped
+    depends_on:
+      - maria_db
 
   mc3:
     container_name: mc3
@@ -31,6 +35,8 @@ services:
     ports:
      - 9020:9020
     restart: unless-stopped
+    depends_on:
+      - maria_db
 
   zookeeper:
     image: wurstmeister/zookeeper
@@ -57,3 +63,16 @@ services:
       - zookeeper
     volumes:
       - ./:/etc/kafka  
+
+  maria_db:
+    image: "mariadb:10.5.8"
+    restart: always
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_DATABASE: invite_test_task
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: rootpassword
+
+

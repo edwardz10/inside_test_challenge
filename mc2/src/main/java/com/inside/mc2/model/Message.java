@@ -9,8 +9,6 @@ import java.util.Date;
 @Builder
 @Data
 public class Message {
-    @JsonProperty("id")
-    private Integer id;
     @JsonProperty("session_id")
     private Integer sessionId;
     @JsonProperty("MC1_timestamp")

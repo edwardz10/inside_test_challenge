@@ -25,3 +25,5 @@ spring:
       poll-timeout: 1800000
       concurrency: 1
       ack-mode: manual_immediate
+
+application.mc1Endpoint: "http://mc1:9000/mc1/communication"
