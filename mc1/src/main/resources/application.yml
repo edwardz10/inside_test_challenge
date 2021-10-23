@@ -1,6 +1,8 @@
 server.port: 9000
 
-application.mc2Endpoint: "http://mc2:9010/mc2/communication"
+application:
+  mc2Endpoint: "http://mc2:9010/mc2/communication"
+  sendingIntervalInSecs: 3
 
 spring.datasource:
   url: jdbc:mariadb://maria_db:3306/invite_test_task

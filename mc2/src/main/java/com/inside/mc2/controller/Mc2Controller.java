@@ -23,7 +23,7 @@ public class Mc2Controller {
     public String communication(@RequestBody Message message) {
         log.info("Received message {}", message);
         mc2Service.processMessage(message);
-        return "{ \"health\": \"OK\" }";
+        return "{ \"result\": \"OK\" }";
     }
 
 }

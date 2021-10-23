@@ -21,20 +21,21 @@ public class Mc1Controller {
 
     @GetMapping("/start")
     public String start() {
-        mc1Service.sendMessageToMc2();
-        return "{ \"health\": \"OK\" }";
+        mc1Service.startSendingTask();
+        return "{ \"result\": \"OK\" }";
     }
 
     @GetMapping("/stop")
     public String stop() {
-        return "{ \"health\": \"OK\" }";
+        mc1Service.stopSendingTask();
+        return "{ \"result\": \"OK\" }";
     }
 
     @PostMapping("/communication")
     public String communication(@RequestBody Message message) {
         log.info("Received message {}", message);
         mc1Service.saveToDb(message);
-        return "{ \"health\": \"OK\" }";
+        return "{ \"result\": \"OK\" }";
     }
 
 }

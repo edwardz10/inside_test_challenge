@@ -8,12 +8,10 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import lombok.var;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
 
-import java.util.Date;
+import javax.annotation.PostConstruct;
+import java.util.Timer;
 
 @Service
 @Slf4j
@@ -22,37 +20,27 @@ public class Mc1Service {
 
     private final MessageRepository messageRepository;
 
-    private int count = 0;
-    private final RestTemplate restTemplate = new RestTemplate();
-
     @Value("${application.mc2Endpoint}")
     private String mc2Endpoint;
+    @Value("${application.sendingIntervalInSecs}")
+    private Integer sendingIntervalInSecs;
 
-    private static final HttpHeaders httpHeaders;
+    private SendMessageTask sendMessageTask;
+    private Timer timer = new Timer();
 
-    static {
-        httpHeaders = new HttpHeaders();
-        httpHeaders.add("Content-type", MediaType.APPLICATION_JSON_VALUE);
+    @PostConstruct
+    public void setup() {
+        sendMessageTask = new SendMessageTask(mc2Endpoint);
     }
 
-    public Message generateMessage() {
-        int currentCount = ++count;
-        return Message.builder()
-                .sessionId(currentCount)
-                .mc1Timestamp(new Date())
-                .build();
+    public void startSendingTask() {
+        timer.scheduleAtFixedRate(sendMessageTask, 0, sendingIntervalInSecs*1000);
+        log.info("SendMessage task started at the interval uf 3 seconds");
     }
 
-    public void sendMessageToMc2() {
-        try {
-            val message = generateMessage();
-            log.info("Generated a message: {}", message);
-            val request = new HttpEntity<>(message, httpHeaders);
-            val response = restTemplate.exchange(mc2Endpoint, HttpMethod.POST, request, String.class);
-            log.info("Successfully sent a message to Mc2, received {}", response.getBody());
-        } catch (RestClientException e) {
-            log.error("Failed to send a message to MC2", e);
-        }
+    public void stopSendingTask() {
+        timer.cancel();
+        log.info("SendMessage task stopped");
     }
 
     public void saveToDb(Message message) {
