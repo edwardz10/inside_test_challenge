@@ -26,24 +26,30 @@ public class Mc1Service {
     private Integer sendingIntervalInSecs;
 
     private SendMessageTask sendMessageTask;
-    private Timer timer = new Timer();
+    private Timer timer;
+
+    private int messageCount;
+    private long interactionTime;
 
     @PostConstruct
-    public void setup() {
-        sendMessageTask = new SendMessageTask(mc2Endpoint);
-    }
-
     public void startSendingTask() {
+        timer = new Timer();
+        sendMessageTask = new SendMessageTask(mc2Endpoint);
         timer.scheduleAtFixedRate(sendMessageTask, 0, sendingIntervalInSecs*1000);
+        messageCount = 0;
+        interactionTime = System.currentTimeMillis();
         log.info("SendMessage task started at the interval uf 3 seconds");
     }
 
     public void stopSendingTask() {
         timer.cancel();
         log.info("SendMessage task stopped");
+        log.info("Messages sent: {}", messageCount);
+        log.info("Interaction time: {} milliseconds", System.currentTimeMillis() - interactionTime);
     }
 
     public void saveToDb(Message message) {
+        messageCount++;
         var messageEntity = convert(message);
         log.info("Created a message entity: {}", messageEntity);
         messageEntity = messageRepository.save(messageEntity);
