@@ -2,6 +2,9 @@ package com.inside.mc2.controller;
 
 import com.inside.mc2.model.Message;
 import com.inside.mc2.service.Mc2Service;
+import io.opentracing.Scope;
+import io.opentracing.Span;
+import io.opentracing.Tracer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 public class Mc2Controller {
 
     private final Mc2Service mc2Service;
+    private final Tracer tracer;
 
     @GetMapping("/health")
     public String health() {
@@ -21,9 +25,13 @@ public class Mc2Controller {
 
     @PostMapping("/communication")
     public String communication(@RequestBody Message message) {
-        log.info("Received message {}", message);
-        mc2Service.processMessage(message);
-        return "{ \"result\": \"OK\" }";
+        try (Scope scope = tracer.buildSpan("communication").startActive(true)) {
+            log.info("Received message {}", message);
+            mc2Service.processMessage(message);
+            Span span = scope.span();
+            span.setTag("message", message.toString());
+            return "{ \"result\": \"OK\" }";
+        }
     }
 
 }

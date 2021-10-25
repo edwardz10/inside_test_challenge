@@ -29,6 +29,8 @@ services:
     depends_on:
       - maria_db
       - jaeger-allinone
+    environment:
+      JAEGER_AGENT_HOST: jaeger-allinone
 
   mc3:
     container_name: mc3
@@ -42,6 +44,8 @@ services:
     depends_on:
       - maria_db
       - jaeger-allinone
+    environment:
+      JAEGER_AGENT_HOST: jaeger-allinone
 
   zookeeper:
     image: wurstmeister/zookeeper

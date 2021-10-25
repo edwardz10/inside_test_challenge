@@ -2,6 +2,9 @@ package com.inside.mc3;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inside.mc3.model.Message;
+import io.opentracing.Scope;
+import io.opentracing.Span;
+import io.opentracing.Tracer;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +30,7 @@ import java.util.Date;
 public class KafkaConsumer {
 
     private final ObjectMapper objectMapper;
+    private final Tracer tracer;
     private final RestTemplate restTemplate = new RestTemplate();
 
     @Value("${application.mc1Endpoint}")
@@ -46,13 +50,15 @@ public class KafkaConsumer {
                         final @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String key,
                         final @Header(KafkaHeaders.RECEIVED_PARTITION_ID) int partition,
                         final @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
-                        final @Header(KafkaHeaders.RECEIVED_TIMESTAMP) long ts
-                        /* final Acknowledgment acknowledgment */) {
-        val messageObject = objectMapper.readValue(message, Message.class);
-        log.info("#### -> Consumed message -> TIMESTAMP: {}\n{}\noffset: {}\nkey: {}\npartition: {}\ntopic: {}", ts, messageObject, offset, key, partition, topic);
-        messageObject.setMc3Timestamp(new Date());
-//        acknowledgment.acknowledge();
-        sendMessageToMc1(messageObject);
+                        final @Header(KafkaHeaders.RECEIVED_TIMESTAMP) long ts) {
+        try (Scope scope = tracer.buildSpan("communication").startActive(true)) {
+            val messageObject = objectMapper.readValue(message, Message.class);
+            log.info("#### -> Consumed message -> TIMESTAMP: {}\n{}\noffset: {}\nkey: {}\npartition: {}\ntopic: {}", ts, messageObject, offset, key, partition, topic);
+            Span span = scope.span();
+            span.setTag("message", messageObject.toString());
+            messageObject.setMc3Timestamp(new Date());
+            sendMessageToMc1(messageObject);
+        }
     }
 
     public void sendMessageToMc1(Message message) {

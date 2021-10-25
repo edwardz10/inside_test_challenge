@@ -26,4 +26,6 @@ spring:
       concurrency: 1
       ack-mode: manual_immediate
 
-application.mc1Endpoint: "http://mc1:9000/mc1/communication"
+application:
+  mc1Endpoint: "http://mc1:9000/mc1/communication"
+  jaeger.serviceName: mc3

@@ -1,4 +1,4 @@
-package com.inside.mc1.config;
+package com.inside.mc3.config;
 
 import lombok.val;
 import org.springframework.beans.factory.annotation.Value;
