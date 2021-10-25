@@ -31,7 +31,6 @@ public class Mc1Service {
     private int messageCount;
     private long interactionTime;
 
-    @PostConstruct
     public void startSendingTask() {
         timer = new Timer();
         sendMessageTask = new SendMessageTask(mc2Endpoint);

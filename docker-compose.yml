@@ -13,6 +13,9 @@ services:
     restart: unless-stopped
     depends_on:
       - maria_db
+      - jaeger-allinone
+    environment:
+      JAEGER_AGENT_HOST: jaeger-allinone
 
   mc2:
     container_name: mc2
@@ -25,6 +28,7 @@ services:
     restart: unless-stopped
     depends_on:
       - maria_db
+      - jaeger-allinone
 
   mc3:
     container_name: mc3
@@ -37,6 +41,7 @@ services:
     restart: unless-stopped
     depends_on:
       - maria_db
+      - jaeger-allinone
 
   zookeeper:
     image: wurstmeister/zookeeper
@@ -75,4 +80,14 @@ services:
       MYSQL_PASSWORD: password
       MYSQL_ROOT_PASSWORD: rootpassword
 
+  jaeger-allinone:
+    image: jaegertracing/all-in-one:1.7
+    ports:
+      - 5775:5775/udp
+      - 6831:6831/udp
+      - 6832:6832/udp
+      - 5778:5778
+      - 16686:16686
+      - 14268:14268
+      - 9411:9411
 
