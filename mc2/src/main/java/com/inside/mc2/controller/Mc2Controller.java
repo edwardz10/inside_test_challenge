@@ -9,6 +9,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Rest controller class that communicates
+ * with the outside world via HTTP.
+ */
 @RestController
 @RequestMapping("/mc2")
 @Slf4j
@@ -18,11 +22,22 @@ public class Mc2Controller {
     private final Mc2Service mc2Service;
     private final Tracer tracer;
 
+    /**
+     * Health endpoint that indicates that
+     * the microservice is up & running.
+     * @return
+     */
     @GetMapping("/health")
     public String health() {
         return "{ \"health\": \"OK\" }";
     }
 
+    /**
+     * Receives messages from the mc1 microservice, sends them
+     * to Kafka and sends spans to Jaeger.
+     * @param message
+     * @return
+     */
     @PostMapping("/communication")
     public String communication(@RequestBody Message message) {
         try (Scope scope = tracer.buildSpan("communication").startActive(true)) {

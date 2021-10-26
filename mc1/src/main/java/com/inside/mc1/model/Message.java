@@ -6,6 +6,9 @@ import lombok.Data;
 
 import java.util.Date;
 
+/**
+ * Message class for HTTP level.
+ */
 @Builder
 @Data
 public class Message {

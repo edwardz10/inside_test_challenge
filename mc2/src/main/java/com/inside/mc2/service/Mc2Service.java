@@ -8,11 +8,12 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
-import org.springframework.util.concurrent.ListenableFuture;
 
-import java.time.LocalDate;
 import java.util.Date;
 
+/**
+ * Main working service of the application.
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -21,6 +22,11 @@ public class Mc2Service {
     private final KafkaProducer kafkaProducer;
     private final ObjectMapper objectMapper;
 
+    /**
+     * Sets a timestamp to the message,
+     * and sends it to Kafka
+     * @param message
+     */
     public void processMessage(Message message) {
         message.setMc2Timestamp(new Date());
         sendMessageToMc3ViaKafka(message);

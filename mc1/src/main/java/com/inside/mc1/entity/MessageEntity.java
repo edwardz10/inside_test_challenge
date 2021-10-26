@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.Date;
 
+/**
+ * Message entity class for DAO level.
+ */
 @Entity
 @Table(name = "Message")
 @Data

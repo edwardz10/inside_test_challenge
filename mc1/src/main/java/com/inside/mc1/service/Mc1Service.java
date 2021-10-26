@@ -10,9 +10,11 @@ import lombok.var;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.util.Timer;
 
+/**
+ * Main working service of the application.
+ */
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -31,6 +33,9 @@ public class Mc1Service {
     private int messageCount;
     private long interactionTime;
 
+    /**
+     * Starts the SendMessageTask as a timer.
+     */
     public void startSendingTask() {
         timer = new Timer();
         sendMessageTask = new SendMessageTask(mc2Endpoint);
@@ -40,6 +45,9 @@ public class Mc1Service {
         log.info("SendMessage task started at the interval uf 3 seconds");
     }
 
+    /**
+     * Stops the SendMessageTask
+     */
     public void stopSendingTask() {
         timer.cancel();
         log.info("SendMessage task stopped");
@@ -47,6 +55,11 @@ public class Mc1Service {
         log.info("Interaction time: {} milliseconds", System.currentTimeMillis() - interactionTime);
     }
 
+    /**
+     * Converts a Message object to a MessageEntity,
+     * and stores it to the DB.
+     * @param message
+     */
     public void saveToDb(Message message) {
         messageCount++;
         var messageEntity = convert(message);
@@ -55,6 +68,11 @@ public class Mc1Service {
         log.info("Saved {} into the database", messageEntity);
     }
 
+    /**
+     * Converts a Message to a MessageObject.
+     * @param message
+     * @return
+     */
     private MessageEntity convert(Message message) {
         val messageEntity = new MessageEntity();
         messageEntity.setSessionId(message.getSessionId());

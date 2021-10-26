@@ -24,6 +24,9 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Date;
 
+/**
+ * Class that reads messages from Kafka.
+ */
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -61,6 +64,10 @@ public class KafkaConsumer {
         }
     }
 
+    /**
+     * Sends a message to mc1 microservice.
+     * @param message
+     */
     public void sendMessageToMc1(Message message) {
         try {
             val request = new HttpEntity<>(message, httpHeaders);

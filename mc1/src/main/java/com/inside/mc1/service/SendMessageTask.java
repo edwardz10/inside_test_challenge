@@ -14,6 +14,9 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Date;
 import java.util.TimerTask;
 
+/**
+ * A task that extends the TimerTask class.
+ */
 @RequiredArgsConstructor
 @Slf4j
 public class SendMessageTask extends TimerTask {
@@ -29,6 +32,9 @@ public class SendMessageTask extends TimerTask {
         httpHeaders.add("Content-type", MediaType.APPLICATION_JSON_VALUE);
     }
 
+    /**
+     * Generates a Message, and sends in to the mc2 microservice.
+     */
     @Override
     public void run() {
         try {

@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
+/**
+ * Message class for HTTP level.
+ */
 @Data
 @NoArgsConstructor
 public class Message {
