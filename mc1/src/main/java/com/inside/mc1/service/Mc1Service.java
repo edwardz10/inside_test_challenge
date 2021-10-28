@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import lombok.var;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.messaging.simp.stomp.StompSession;
 import org.springframework.stereotype.Service;
 
 import java.util.Timer;
@@ -21,11 +22,12 @@ import java.util.Timer;
 public class Mc1Service {
 
     private final MessageRepository messageRepository;
+    private final StompSession stompSession;
 
-    @Value("${application.mc2Endpoint}")
-    private String mc2Endpoint;
     @Value("${application.sendingIntervalInSecs}")
     private Integer sendingIntervalInSecs;
+    @Value("${application.websocket.destination}")
+    private String destination;
 
     private SendMessageTask sendMessageTask;
     private Timer timer;
@@ -38,7 +40,7 @@ public class Mc1Service {
      */
     public void startSendingTask() {
         timer = new Timer();
-        sendMessageTask = new SendMessageTask(mc2Endpoint);
+        sendMessageTask = new SendMessageTask(stompSession, destination);
         timer.scheduleAtFixedRate(sendMessageTask, 0, sendingIntervalInSecs*1000);
         messageCount = 0;
         interactionTime = System.currentTimeMillis();

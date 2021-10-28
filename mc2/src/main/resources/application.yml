@@ -22,4 +22,6 @@ spring:
       concurrency: 1
       ack-mode: manual_immediate
 
-application.jaeger.serviceName: mc2
+application:
+  jaeger.serviceName: mc2
+  broker.relay.host: localhost
